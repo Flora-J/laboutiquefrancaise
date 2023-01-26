@@ -6,7 +6,7 @@ use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AddressRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\AddressRepository", repositoryClass=AddressRepository::class)
  */
 class Address
 {
@@ -15,13 +15,13 @@ class Address
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private ?int $id;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="addresses")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
+    private ?User $user;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -68,6 +68,10 @@ class Address
      */
     private $phone;
 
+    public function __toString()
+    {
+        return $this->getName().'[br]'.$this->getAddress().'[br]'.$this->getCity().' - '.$this->getCountry();
+    }
     public function getId(): ?int
     {
         return $this->id;
