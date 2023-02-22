@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Class\Mail;
 use App\Entity\User;
 use App\Form\RegisterType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,6 +23,8 @@ class RegisterController extends AbstractController
     #[Route('/inscription', name: 'app_register')]
     public function index(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
+        $notification = null;
+
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
 
@@ -31,16 +34,28 @@ class RegisterController extends AbstractController
 
             $user = $form->getData();
 
-            $password = $encoder->encodePassword($user, $user->getPassword());
+            $search_email = $this->entityManager->getRepository(User::class)->findOneByEmail($user->getEmail());
 
-            $user->setPassword($password);
+            if (!$search_email) {
+                $password = $encoder->encodePassword($user, $user->getPassword());
 
-            $this->entityManager->persist($user);
-            $this->entityManager->flush();
+                $user->setPassword($password);
+
+                $this->entityManager->persist($user);
+                $this->entityManager->flush();
+
+                $mail = new Mail();
+                $content = "Bonjour ".$user->getFirstname()."<br/>Bienvenue sur la première boutique dédiée au made in France.<br><br/>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus id ornare turpis. In quis lacinia risus. Nulla venenatis nisi est, ac posuere tellus iaculis nec. Aliquam faucibus diam nibh. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur fringilla euismod venenatis. Nam sed massa lacus.";
+                $mail->send($user->getEmail(), $user->getFirstname(), 'Bienvenue sur La Boutique Française', $content);
+
+                $notification = "Votre inscription s'est correctement déroulée. Vous pouvez dès à présent vous connecter à votre compte.";
+            } else {
+                $notification = "L'email que vous avez renseigné existe déjà.";
+            }
         }
-
         return $this->render('register/index.html.twig', [
-            'form' => $form->createView()
+          'form' => $form->createView(),
+          'notification' => $notification
         ]);
     }
 }
