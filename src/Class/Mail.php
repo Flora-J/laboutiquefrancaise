@@ -7,8 +7,8 @@ use Mailjet\Resources;
 
 Class Mail
 {
-    private string $api_key = '09e1ca6b8a530c06e860880475e3d64d';
-    private string $api_key_secret = '3fa3961c7626a12c50b9613676043b12';
+    private string $api_key = '412adfe7d059f5c578675abe496080ae';
+    private string $api_key_secret = '14899d2048a954be64f046919d02bab0';
 
     public function send($to_email, $to_name, $subject, $content): void
     {
@@ -29,10 +29,9 @@ Class Mail
                     'TemplateID' => 4602826,
                     'TemplateLanguage' => true,
                     'Subject' => $subject,
-                    'Variables' => [
-                        'content' => $content,
-                        true
-                    ]
+                    'Variables' => json_decode('content',
+                        $content,
+                        true)
                 ]
             ]
         ];
