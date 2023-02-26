@@ -6,6 +6,23 @@ body {
     color: #FFFFFF;
 }
 
+.account-item {
+    background-color: #f1f2f6;
+    padding: 70px;
+}
+
+.account-item a {
+    text-transform: uppercase;
+    font-size: 13px;
+    color: #4b6584;
+    font-weight: bold;
+}
+
+.account-item a:hover {
+    color: #778ca3;
+    text-decoration: none;
+}
+
 .cart-icon {
     height: 20px;
     padding-left: 20px;
